@@ -1,4 +1,4 @@
-package com.gestionale.backend.model;
+package com.gestionale.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +14,13 @@ public class Prenotazione {
     private int numeroCani;
     private LocalDate dataInizio;
     private LocalDate dataFine;
+
+    public Prenotazione(String nomeCliente, int numeroCani, String dataInizio, String dataFine) {
+    }
+
+    public Prenotazione() {
+
+    }
 
     public String getId() {
         return id;

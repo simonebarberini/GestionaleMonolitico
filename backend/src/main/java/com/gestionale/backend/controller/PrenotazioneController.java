@@ -1,6 +1,7 @@
 package com.gestionale.backend.controller;
 
-import com.gestionale.backend.model.Prenotazione;
+import com.gestionale.API.GestionaleApi;
+import com.gestionale.model.Prenotazione;
 import com.gestionale.backend.service.DisponibilitaService;
 import com.gestionale.backend.service.PrenotazioneService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+@RequestMapping("/prenotazioneServices")
 @RestController
-public class PrenotazioneController {
+public class PrenotazioneController implements GestionaleApi {
 
     private static final int NUMERO_BOX = 10;
 

@@ -1,6 +1,6 @@
 package com.gestionale.backend.service;
 
-import com.gestionale.backend.model.Prenotazione;
+import com.gestionale.model.Prenotazione;
 import com.gestionale.backend.repo.PrenotazioneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

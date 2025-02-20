@@ -1,6 +1,6 @@
 package com.gestionale.backend.repo;
 
-import com.gestionale.backend.model.Prenotazione;
+import com.gestionale.model.Prenotazione;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
