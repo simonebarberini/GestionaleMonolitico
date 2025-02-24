@@ -6,8 +6,8 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>Backend</module>
-    <module>Frontend</module>
+    <module>backend</module>
+    <module>frontend</module>
     <module>Api</module>
   </modules>
 
