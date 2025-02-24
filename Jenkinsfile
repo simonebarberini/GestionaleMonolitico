@@ -15,14 +15,14 @@ pipeline {
             steps {
                 script {
                     checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: '*/master']], // Cambia in "master" se necessario
-                        userRemoteConfigs: [[
-                            url: 'https://github.com/simonebarberini/GestionaleMonolitico.git',
-                            credentialsId: env.GIT_CREDENTIALS_ID
-                        ]],
-                        extensions: [[$class: 'SubmoduleOption', recursiveSubmodules: true, trackingSubmodules: true]]
-                    ])
+                    $class: 'GitSCM',
+                    branches: [[name: '*/master']], // Modifica se usi un altro branch
+                    userRemoteConfigs: [[
+                    url: 'https://github.com/simonebarberini/GestionaleMonolitico.git',
+                    credentialsId: 'github-credentials'
+                ]],
+                extensions: [[$class: 'CloneOption', depth: 0, noTags: false, shallow: false]]
+            ])
                 }
             }
         }
