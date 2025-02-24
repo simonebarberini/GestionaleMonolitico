@@ -20,7 +20,8 @@ pipeline {
                         userRemoteConfigs: [[
                             url: 'https://github.com/simonebarberini/GestionaleMonolitico.git',
                             credentialsId: env.GIT_CREDENTIALS_ID
-                        ]]
+                        ]],
+                        extensions: [[$class: 'SubmoduleOption', recursiveSubmodules: true, trackingSubmodules: true]]
                     ])
                 }
             }
