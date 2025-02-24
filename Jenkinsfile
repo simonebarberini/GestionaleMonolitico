@@ -7,12 +7,22 @@ pipeline {
         SERVER_IP = "192.168.68.116"
         SERVER_USER = "simone"
         DEPLOY_PATH = "/home/${SERVER_USER}/app"
+        GIT_CREDENTIALS_ID = 'github-credentials'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/simonebarberini/GestionaleMonolitico.git'  // Modifica con il tuo repo
+                script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/main']], // Cambia in "master" se necessario
+                        userRemoteConfigs: [[
+                            url: 'https://github.com/simonebarberini/GestionaleMonolitico.git',
+                            credentialsId: env.GIT_CREDENTIALS_ID
+                        ]]
+                    ])
+                }
             }
         }
 
