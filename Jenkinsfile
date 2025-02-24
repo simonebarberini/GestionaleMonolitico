@@ -40,7 +40,11 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${DOCKER_IMAGE} .'
+                // Costruisce l'immagine del backend
+                 sh 'docker build -t gestionepensione-backend -f backend/Dockerfile backend/'
+
+                  // Costruisce l'immagine del frontend
+                  sh 'docker build -t gestionepensione-frontend -f frontend/Dockerfile frontend/'
             }
         }
 
