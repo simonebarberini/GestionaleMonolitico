@@ -16,7 +16,7 @@ pipeline {
                 script {
                     checkout([
                         $class: 'GitSCM',
-                        branches: [[name: '*/main']], // Cambia in "master" se necessario
+                        branches: [[name: '*/master']], // Cambia in "master" se necessario
                         userRemoteConfigs: [[
                             url: 'https://github.com/simonebarberini/GestionaleMonolitico.git',
                             credentialsId: env.GIT_CREDENTIALS_ID
