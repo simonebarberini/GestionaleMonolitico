@@ -2,6 +2,7 @@ package com.gestionale.backend.service;
 
 import com.gestionale.model.Prenotazione;
 import com.gestionale.backend.repo.PrenotazioneRepository;
+import com.gestionale.model.VoidResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +24,28 @@ public class PrenotazioneService {
         }
     }
 
-    public void addPrenotazione(Prenotazione prenotazione) {
+    public VoidResponseDTO addPrenotazione(Prenotazione prenotazione) {
+        VoidResponseDTO voidResponseDTO;
         try {
             prenotazioneRepo.save(prenotazione);
+            voidResponseDTO = new VoidResponseDTO("Prenotazione Inserita con successo!", true, null);
         }catch (Exception e){
-            throw new RuntimeException("Non é stato possibile salvare la prenotazione");
+            voidResponseDTO = new VoidResponseDTO("Errore nell'eliminnazione della prenotazione", false, e);
+            return voidResponseDTO;
         }
 
+        return voidResponseDTO;
     }
 
-    public void eliminaPrenotazione(String id) {
+    public VoidResponseDTO eliminaPrenotazione(String id) {
+        VoidResponseDTO voidResponseDTO;
         try {
             prenotazioneRepo.deleteById(id);
+            voidResponseDTO = new VoidResponseDTO("Prenotazione eliminata con successo!", true, null);
         }catch (IllegalArgumentException e){
-            throw new RuntimeException("Non é stato possibile eliminare la prenotazione");
+            voidResponseDTO = new VoidResponseDTO("Errore nell'eliminnazione della prenotazione", false, e);
+            return voidResponseDTO;
         }
+        return voidResponseDTO;
     }
 }

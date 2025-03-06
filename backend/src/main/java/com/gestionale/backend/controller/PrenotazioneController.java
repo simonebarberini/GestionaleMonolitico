@@ -1,9 +1,11 @@
 package com.gestionale.backend.controller;
 
 import com.gestionale.API.GestionaleApi;
+import com.gestionale.model.DisponibilitaRequestDTO;
 import com.gestionale.model.Prenotazione;
 import com.gestionale.backend.service.DisponibilitaService;
 import com.gestionale.backend.service.PrenotazioneService;
+import com.gestionale.model.VoidResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,7 @@ public class PrenotazioneController implements GestionaleApi {
     DisponibilitaService disponibilitaService;
 
 
+    @Override
     @GetMapping("/prenotazioni")
     public List<Prenotazione> getAllPrenotazioni(){
         List<Prenotazione> result = prenotazioneService.getAllPrenotazioni();
@@ -30,6 +33,7 @@ public class PrenotazioneController implements GestionaleApi {
         return result;
     }
 
+    @Override
     @PostMapping("/nuovaPrenotazione")
     public void addPrenotazione(@RequestParam String nomeCliente, @RequestParam int numeroCani, @RequestParam String dataInizio, @RequestParam String dataFine){
 
@@ -51,19 +55,15 @@ public class PrenotazioneController implements GestionaleApi {
 
     }
 
+    @Override
     @GetMapping("/verificaDisponibilita")
-    public Integer getDisponibilita(@RequestParam String dataInizio, @RequestParam String dataFine){
-        return disponibilitaService.verificaDisponibilita(LocalDate.parse(dataInizio), LocalDate.parse(dataFine), NUMERO_BOX);
+    public Integer getDisponibilita(DisponibilitaRequestDTO disponibilitaRequestDTO){
+        return disponibilitaService.verificaDisponibilita(disponibilitaRequestDTO.getDataInizio(), disponibilitaRequestDTO.getDataFine(), NUMERO_BOX);
     }
 
     @DeleteMapping("/eliminaPrenotazione")
-    public void eliminaPrenotazione(@RequestParam String id){
-        try {
-            prenotazioneService.eliminaPrenotazione(id);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
-
+    public VoidResponseDTO eliminaPrenotazione(@RequestParam String id){
+        return prenotazioneService.eliminaPrenotazione(id);
     }
 
 
