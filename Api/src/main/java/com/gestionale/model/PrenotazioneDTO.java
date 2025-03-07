@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 
 @Document(collection = "prenotazione")
-public class Prenotazione {
+public class PrenotazioneDTO {
     @Id
     private String id;
     private String nomeCliente;
@@ -15,10 +15,8 @@ public class Prenotazione {
     private LocalDate dataInizio;
     private LocalDate dataFine;
 
-    public Prenotazione(String nomeCliente, int numeroCani, String dataInizio, String dataFine) {
-    }
 
-    public Prenotazione() {
+    public PrenotazioneDTO() {
 
     }
 

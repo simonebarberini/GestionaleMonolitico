@@ -1,6 +1,6 @@
 package com.gestionale.backend.service;
 
-import com.gestionale.model.Prenotazione;
+import com.gestionale.model.PrenotazioneDTO;
 import com.gestionale.backend.repo.PrenotazioneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,13 +18,13 @@ public class DisponibilitaService {
 
 
     public int calcolaMassimoBoxOccupati(LocalDate dataInizio, LocalDate dataFine) {
-        List<Prenotazione> prenotazioni = prenotazioneRepository.findSovrapposizionePrenotaioni(dataInizio, dataFine);
+        List<PrenotazioneDTO> prenotazioni = prenotazioneRepository.findSovrapposizionePrenotaioni(dataInizio, dataFine);
 
         Map<LocalDate, Integer> occupazionePerGiorno = new HashMap<>();
 
-        for (Prenotazione prenotazione : prenotazioni) {
-            LocalDate inizioPrenotazione = prenotazione.getDataInizio();
-            LocalDate finePrenotazione = prenotazione.getDataFine();
+        for (PrenotazioneDTO prenotazioneDTO : prenotazioni) {
+            LocalDate inizioPrenotazione = prenotazioneDTO.getDataInizio();
+            LocalDate finePrenotazione = prenotazioneDTO.getDataFine();
 
             LocalDate inizioSovrapposizione = inizioPrenotazione.isBefore(dataInizio) ? dataInizio : inizioPrenotazione;
             LocalDate fineSovrapposizione = finePrenotazione.isAfter(dataFine) ? dataFine : finePrenotazione;

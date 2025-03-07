@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout">
+<head>
+    <title>Lista Prenotazioni</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Lista Prenotazioni</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome Cliente</th>
+            <th>Data Inizio</th>
+            <th>Data Fine</th>
+            <th>Numero Cani</th>
+            <th>Azioni</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="prenotazione : ${prenotazioni}">
+            <td th:text="${prenotazione.id}"></td>
+            <td th:text="${prenotazione.nomeCliente}"></td>
+            <td th:text="${prenotazione.dataInizio}"></td>
+            <td th:text="${prenotazione.dataFine}"></td>
+            <td th:text="${prenotazione.numeroCani}"></td>
+            <td>
+                <a class="btn btn-warning btn-sm" th:href="@{/modifica/{id}(id=${prenotazione.id})}">Modifica</a>
+                <a class="btn btn-danger btn-sm" th:href="@{/elimina/{id}(id=${prenotazione.id})}">Elimina</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

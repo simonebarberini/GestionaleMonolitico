@@ -1,6 +1,6 @@
 package com.gestionale.backend.service;
 
-import com.gestionale.model.Prenotazione;
+import com.gestionale.model.PrenotazioneDTO;
 import com.gestionale.backend.repo.PrenotazioneRepository;
 import com.gestionale.model.VoidResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,20 +14,20 @@ public class PrenotazioneService {
     @Autowired
     private PrenotazioneRepository prenotazioneRepo;
 
-    public List<Prenotazione> getAllPrenotazioni(){
-        List<Prenotazione> prenotazioneList = prenotazioneRepo.findAll();
-        if (prenotazioneList== null){
+    public List<PrenotazioneDTO> getAllPrenotazioni(){
+        List<PrenotazioneDTO> prenotazioneDTOList = prenotazioneRepo.findAll();
+        if (prenotazioneDTOList == null){
             return new ArrayList<>();
         }
         else {
-            return prenotazioneList;
+            return prenotazioneDTOList;
         }
     }
 
-    public VoidResponseDTO addPrenotazione(Prenotazione prenotazione) {
+    public VoidResponseDTO addPrenotazione(PrenotazioneDTO prenotazioneDTO) {
         VoidResponseDTO voidResponseDTO;
         try {
-            prenotazioneRepo.save(prenotazione);
+            prenotazioneRepo.save(prenotazioneDTO);
             voidResponseDTO = new VoidResponseDTO("Prenotazione Inserita con successo!", true, null);
         }catch (Exception e){
             voidResponseDTO = new VoidResponseDTO("Errore nell'eliminnazione della prenotazione", false, e);

@@ -2,14 +2,13 @@ package com.gestionale.backend.controller;
 
 import com.gestionale.API.GestionaleApi;
 import com.gestionale.model.DisponibilitaRequestDTO;
-import com.gestionale.model.Prenotazione;
+import com.gestionale.model.PrenotazioneDTO;
 import com.gestionale.backend.service.DisponibilitaService;
 import com.gestionale.backend.service.PrenotazioneService;
 import com.gestionale.model.VoidResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RequestMapping("/prenotazioneServices")
@@ -27,32 +26,29 @@ public class PrenotazioneController implements GestionaleApi {
 
     @Override
     @GetMapping("/prenotazioni")
-    public List<Prenotazione> getAllPrenotazioni(){
-        List<Prenotazione> result = prenotazioneService.getAllPrenotazioni();
+    public List<PrenotazioneDTO> getAllPrenotazioni(){
+        List<PrenotazioneDTO> result = prenotazioneService.getAllPrenotazioni();
         System.out.println("Prenotazioni restituite: " + result);
         return result;
     }
 
     @Override
     @PostMapping("/nuovaPrenotazione")
-    public void addPrenotazione(@RequestParam String nomeCliente, @RequestParam int numeroCani, @RequestParam String dataInizio, @RequestParam String dataFine){
+    public VoidResponseDTO addPrenotazione(@RequestBody PrenotazioneDTO prenotazioneDTO){
 
-        int disponibilita = disponibilitaService.verificaDisponibilita(LocalDate.parse(dataInizio), LocalDate.parse(dataFine), NUMERO_BOX);
+        int disponibilita = disponibilitaService.verificaDisponibilita(prenotazioneDTO.getDataInizio(), prenotazioneDTO.getDataFine(), NUMERO_BOX);
 
         if (disponibilita<=0){
-            throw new RuntimeException("Non ci sono box disponibili in queste date");
+            String message = "Non ci sono Box disponibili";
+            return new VoidResponseDTO(message, false, new RuntimeException(message));
         }
-        Prenotazione prenotazione = new Prenotazione();
-        prenotazione.setNomeCliente(nomeCliente);
-        prenotazione.setNumeroCani(numeroCani);
-        prenotazione.setDataInizio(LocalDate.parse(dataInizio));
-        prenotazione.setDataFine(LocalDate.parse(dataFine));
+        VoidResponseDTO response = new VoidResponseDTO();
         try {
-            prenotazioneService.addPrenotazione(prenotazione);
+            response = prenotazioneService.addPrenotazione(prenotazioneDTO);
         } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+            return response;
         }
-
+        return response;
     }
 
     @Override
