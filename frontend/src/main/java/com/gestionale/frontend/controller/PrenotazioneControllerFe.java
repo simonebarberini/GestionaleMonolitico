@@ -10,6 +10,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.tags.Param;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -64,8 +65,18 @@ public class PrenotazioneControllerFe implements GestionaleApi {
     }
 
     @Override
-    public VoidResponseDTO eliminaPrenotazione(String id) {
-        return null;
+    public VoidResponseDTO eliminaPrenotazione(String id) throws URISyntaxException {
+        String service = "/eliminaPrenotazione";
+        URI uri = new URI(BASE_URL +SERVICE_PATH+ service + "?id="+id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<VoidResponseDTO> response;
+
+        response = restTemplate.exchange(uri, HttpMethod.DELETE, requestEntity, VoidResponseDTO.class);
+        return response.getBody();
     }
 
 }

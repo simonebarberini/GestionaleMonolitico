@@ -4,26 +4,33 @@
       layout:decorate="layout">
 <head>
     <title>Nuova Prenotazione</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css">
 </head>
 <body>
 <div layout:fragment="content">
     <h1>Nuova Prenotazione</h1>
     <form method="post" th:action="@{/salvaPrenotazioneView}">
-        <div class="mb-3">
-            <label class="form-label">Nome Cliente</label>
-            <input type="text" class="form-control" name="nomeCliente" required>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Nome Cliente</label>
+                <input type="text" class="form-control" name="nomeCliente" required>
+            </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Data Inizio</label>
-            <input type="date" class="form-control" name="dataInizio" required>
+        <div class="row mb-3">
+            <div class="col-md-2">
+                <label class="form-label">Data Inizio</label>
+                <input type="date" class="form-control" name="dataInizio" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Data Fine</label>
+                <input type="date" class="form-control" name="dataFine" required>
+            </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Data Fine</label>
-            <input type="date" class="form-control" name="dataFine" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Numero Cani</label>
-            <input type="number" class="form-control" name="numeroCani" required>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Numero Cani</label>
+                <input type="number" class="form-control" name="numeroCani" required>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Salva</button>
     </form>

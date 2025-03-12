@@ -15,5 +15,5 @@ public interface GestionaleApi {
 
     Integer getDisponibilita(DisponibilitaRequestDTO disponibilitaRequestDTO) throws URISyntaxException;
 
-    public VoidResponseDTO eliminaPrenotazione(String id);
+    public VoidResponseDTO eliminaPrenotazione(String id) throws URISyntaxException;
 }

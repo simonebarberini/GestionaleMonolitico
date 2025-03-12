@@ -4,14 +4,24 @@
       layout:decorate="layout">
 <head>
     <title>Lista Prenotazioni</title>
+    <!-- Includi CSS di Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css">
 </head>
 <body>
 <div layout:fragment="content">
     <h1>Lista Prenotazioni</h1>
+
+    <!-- Messaggi di successo o errore -->
+    <div th:if="${success}" class="alert alert-success" role="alert">
+        <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
+
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Nome Cliente</th>
             <th>Data Inizio</th>
             <th>Data Fine</th>
@@ -21,18 +31,60 @@
         </thead>
         <tbody>
         <tr th:each="prenotazione : ${prenotazioni}">
-            <td th:text="${prenotazione.id}"></td>
             <td th:text="${prenotazione.nomeCliente}"></td>
             <td th:text="${prenotazione.dataInizio}"></td>
             <td th:text="${prenotazione.dataFine}"></td>
             <td th:text="${prenotazione.numeroCani}"></td>
             <td>
                 <a class="btn btn-warning btn-sm" th:href="@{/modifica/{id}(id=${prenotazione.id})}">Modifica</a>
-                <a class="btn btn-danger btn-sm" th:href="@{/elimina/{id}(id=${prenotazione.id})}">Elimina</a>
+                <!-- Bottone per aprire il modal -->
+                <a class="btn btn-danger btn-sm"
+                   data-bs-toggle="modal"
+                   data-bs-target="#confirmDeleteModal"
+                   th:attr="data-id=${prenotazione.id}">
+                    Elimina
+                </a>
             </td>
         </tr>
         </tbody>
     </table>
-</div>
+
+    <!-- Modal di conferma eliminazione -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Conferma Eliminazione</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                </div>
+                <div class="modal-body">
+                    Sei sicuro di voler eliminare questa prenotazione?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <!-- Form per l'eliminazione -->
+                    <form id="deleteForm" th:action="@{/elimina}" method="post" style="display:inline;">
+                        <!-- Necessario per permettere l'override del metodo -->
+                        <input type="hidden" name="_method" value="delete"/>
+                        <!-- Campo nascosto per passare l'id -->
+                        <input type="hidden" name="id" id="deleteId" />
+                        <button type="submit" class="btn btn-danger">Elimina</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Includi JS di Bootstrap (con Popper) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget; // Bottone che ha aperto il modal
+      var id = button.getAttribute('data-id'); // Recupera l'id dalla riga
+      document.getElementById('deleteId').value = id;
+    });
+</script>
 </body>
 </html>
