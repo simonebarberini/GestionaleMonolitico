@@ -3,39 +3,50 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout">
 <head>
-    <title>Nuova Prenotazione</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css">
+    <title>Modifica Prenotazione</title>
 </head>
 <body>
 <div layout:fragment="content">
-    <h1>Nuova Prenotazione</h1>
+    <h1>Modifica Prenotazione</h1>
+    
     <div id="dateError" class="alert alert-danger" style="display: none;">
         Le date inserite non sono valide. La data di inizio deve essere precedente o uguale alla data di fine.
     </div>
-    <form method="post" th:action="@{/salvaPrenotazioneView}" id="prenotazioneForm" onsubmit="return validateDates()">
+    
+    <form th:action="@{/aggiornaPrenotazione}" th:object="${prenotazione}" method="post" id="prenotazioneForm" onsubmit="return validateDates()">
+        <input type="hidden" th:field="*{id}" />
+        
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label">Nome Cliente</label>
-                <input type="text" class="form-control" name="nomeCliente" required>
+                <input type="text" class="form-control" th:field="*{nomeCliente}" required>
             </div>
         </div>
+        
         <div class="row mb-3">
             <div class="col-md-2">
                 <label class="form-label">Data Inizio</label>
-                <input type="date" class="form-control" name="dataInizio" id="dataInizio" required>
+                <input type="date" class="form-control" id="dataInizio"
+                       th:attr="value=${#temporals.format(prenotazione.dataInizio, 'yyyy-MM-dd')}"
+                       name="dataInizio" required>
             </div>
             <div class="col-md-2">
                 <label class="form-label">Data Fine</label>
-                <input type="date" class="form-control" name="dataFine" id="dataFine" required>
+                <input type="date" class="form-control" id="dataFine"
+                       th:attr="value=${#temporals.format(prenotazione.dataFine, 'yyyy-MM-dd')}"
+                       name="dataFine" required>
             </div>
         </div>
+        
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label">Numero Cani</label>
-                <input type="number" class="form-control" name="numeroCani" required>
+                <input type="number" class="form-control" th:field="*{numeroCani}" required>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Salva</button>
+        
+        <button type="submit" class="btn btn-primary">Salva Modifiche</button>
+        <a th:href="@{/prenotazioniView}" class="btn btn-secondary">Annulla</a>
     </form>
     
     <script>

@@ -48,4 +48,24 @@ public class PrenotazioneService {
         }
         return voidResponseDTO;
     }
+
+    public PrenotazioneDTO getPrenotazione(String id) {
+        return prenotazioneRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prenotazione non trovata"));
+    }
+
+    public VoidResponseDTO updatePrenotazione(PrenotazioneDTO prenotazioneDTO) {
+        VoidResponseDTO voidResponseDTO;
+        try {
+            if (!prenotazioneRepo.existsById(prenotazioneDTO.getId())) {
+                return new VoidResponseDTO("Prenotazione non trovata", false, 
+                    new RuntimeException("Prenotazione non trovata"));
+            }
+            prenotazioneRepo.save(prenotazioneDTO);
+            voidResponseDTO = new VoidResponseDTO("Prenotazione aggiornata con successo!", true, null);
+        } catch (Exception e) {
+            voidResponseDTO = new VoidResponseDTO("Errore nell'aggiornamento della prenotazione", false, e);
+        }
+        return voidResponseDTO;
+    }
 }

@@ -62,5 +62,14 @@ public class PrenotazioneController implements GestionaleApi {
         return prenotazioneService.eliminaPrenotazione(id);
     }
 
+    @GetMapping("/prenotazione/{id}")
+    public PrenotazioneDTO getPrenotazione(@PathVariable String id) {
+        return prenotazioneService.getPrenotazione(id);
+    }
+
+    @PutMapping("/aggiornaPrenotazione")
+    public VoidResponseDTO updatePrenotazione(@RequestBody PrenotazioneDTO prenotazioneDTO) {
+        return prenotazioneService.updatePrenotazione(prenotazioneDTO);
+    }
 
 }

@@ -61,4 +61,30 @@ public class PrenotazioneController {
 
         return "redirect:/prenotazioniView";
     }
+
+    @GetMapping("/modifica/{id}")
+    public String modificaPrenotazioneForm(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) throws URISyntaxException {
+        try {
+            PrenotazioneDTO prenotazione = prenotazioneControllerFe.getPrenotazione(id);
+            model.addAttribute("prenotazione", prenotazione);
+            model.addAttribute("pageTitle", "Modifica Prenotazione");
+            return "modifica-prenotazione";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Prenotazione non trovata");
+            return "redirect:/prenotazioniView";
+        }
+    }
+
+    @PostMapping("/aggiornaPrenotazione")
+    public String aggiornaPrenotazione(@ModelAttribute PrenotazioneDTO prenotazione, RedirectAttributes redirectAttributes) throws URISyntaxException {
+        VoidResponseDTO responseDTO = prenotazioneControllerFe.updatePrenotazione(prenotazione);
+        
+        if (!responseDTO.isSuccess()) {
+            redirectAttributes.addFlashAttribute("error", responseDTO.getMessage());
+        } else {
+            redirectAttributes.addFlashAttribute("success", "Prenotazione aggiornata con successo");
+        }
+        
+        return "redirect:/prenotazioniView";
+    }
 }

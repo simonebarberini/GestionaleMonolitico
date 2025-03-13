@@ -79,4 +79,29 @@ public class PrenotazioneControllerFe implements GestionaleApi {
         return response.getBody();
     }
 
+    public PrenotazioneDTO getPrenotazione(String id) throws URISyntaxException {
+        String service = "/prenotazione/" + id;
+        URI uri = new URI(BASE_URL + SERVICE_PATH + service);
+        
+        ResponseEntity<PrenotazioneDTO> response = restTemplate.getForEntity(uri, PrenotazioneDTO.class);
+        return response.getBody();
+    }
+
+    public VoidResponseDTO updatePrenotazione(PrenotazioneDTO prenotazioneDTO) throws URISyntaxException {
+        String service = "/aggiornaPrenotazione";
+        URI uri = new URI(BASE_URL + SERVICE_PATH + service);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<PrenotazioneDTO> requestEntity = new HttpEntity<>(prenotazioneDTO, headers);
+        
+        ResponseEntity<VoidResponseDTO> response = restTemplate.exchange(
+            uri,
+            HttpMethod.PUT,
+            requestEntity,
+            VoidResponseDTO.class
+        );
+        
+        return response.getBody();
+    }
 }
