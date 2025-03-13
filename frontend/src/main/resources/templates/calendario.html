@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout">
+<head>
+    <title>Calendario Prenotazioni</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
+    <style>
+        .fc-day-disponibile-alta {
+            background-color: #d4edda;
+        }
+        .fc-day-disponibile-media {
+            background-color: #fff3cd;
+        }
+        .fc-day-disponibile-bassa {
+            background-color: #f8d7da;
+        }
+        .fc-event {
+            cursor: pointer;
+        }
+        .view-buttons {
+            margin-bottom: 15px;
+        }
+        #calendar {
+            margin-top: 20px;
+        }
+        .box-disponibili {
+            font-weight: bold;
+        }
+        .prenotazione-cliente {
+            margin: 2px 0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            background-color: #e2e3e5;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Calendario Prenotazioni</h1>
+    
+    <div class="view-buttons">
+        <button id="monthView" class="btn btn-primary">Mese</button>
+        <button id="weekView" class="btn btn-secondary">Settimana</button>
+        <button id="dayView" class="btn btn-secondary">Giorno</button>
+    </div>
+    
+    <div id="calendar"></div>
+    
+    <!-- Modal per visualizzare le prenotazioni del giorno -->
+    <div class="modal fade" id="dayPrenotazioniModal" tabindex="-1" aria-labelledby="dayPrenotazioniModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dayPrenotazioniModalLabel">Prenotazioni del giorno</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="dayPrenotazioniContent">
+                        <!-- Qui verranno caricate le prenotazioni del giorno -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            let currentView = 'dayGridMonth';
+            
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: currentView,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: ''
+                },
+                locale: 'it',
+                firstDay: 1, // Lunedì come primo giorno della settimana
+                dayMaxEvents: true,
+                events: function(info, successCallback, failureCallback) {
+                    // Carica gli eventi dal server in base alla vista corrente
+                    let endpoint = '/disponibilitaMese';
+                    
+                    if (currentView === 'dayGridWeek') {
+                        endpoint = '/prenotazioniSettimana';
+                    } else if (currentView === 'dayGridDay') {
+                        endpoint = '/prenotazioniGiorno';
+                    }
+                    
+                    fetch(endpoint + '?start=' + info.startStr + '&end=' + info.endStr)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Errore nella richiesta: ' + response.status);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            successCallback(data);
+                        })
+                        .catch(error => {
+                            console.error('Errore nel caricamento degli eventi:', error);
+                            failureCallback(error);
+                        });
+                },
+                eventClick: function(info) {
+                    // Solo nella vista mensile, mostra il dettaglio delle prenotazioni
+                    if (currentView === 'dayGridMonth') {
+                        const date = info.event.start;
+                        const formattedDate = date.toISOString().split('T')[0];
+                        
+                        fetch('/prenotazioniGiornoDettaglio?data=' + formattedDate)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Errore nella richiesta: ' + response.status);
+                                }
+                                return response.text();
+                            })
+                            .then(html => {
+                                document.getElementById('dayPrenotazioniContent').innerHTML = html;
+                                document.getElementById('dayPrenotazioniModalLabel').textContent = 
+                                    'Prenotazioni del ' + date.toLocaleDateString('it-IT', { 
+                                        weekday: 'long', 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    });
+                                
+                                const modal = new bootstrap.Modal(document.getElementById('dayPrenotazioniModal'));
+                                modal.show();
+                            })
+                            .catch(error => {
+                                console.error('Errore nel caricamento delle prenotazioni:', error);
+                            });
+                    }
+                }
+            });
+            
+            calendar.render();
+            
+            // Gestione dei pulsanti per cambiare vista
+            document.getElementById('monthView').addEventListener('click', function() {
+                currentView = 'dayGridMonth';
+                calendar.changeView(currentView);
+                updateButtonStates('monthView');
+                calendar.refetchEvents(); // Ricarica gli eventi per la nuova vista
+            });
+            
+            document.getElementById('weekView').addEventListener('click', function() {
+                currentView = 'dayGridWeek';
+                calendar.changeView(currentView);
+                updateButtonStates('weekView');
+                calendar.refetchEvents(); // Ricarica gli eventi per la nuova vista
+            });
+            
+            document.getElementById('dayView').addEventListener('click', function() {
+                currentView = 'dayGridDay';
+                calendar.changeView(currentView);
+                updateButtonStates('dayView');
+                calendar.refetchEvents(); // Ricarica gli eventi per la nuova vista
+            });
+            
+            function updateButtonStates(activeButton) {
+                document.getElementById('monthView').className = 'btn ' + (activeButton === 'monthView' ? 'btn-primary' : 'btn-secondary');
+                document.getElementById('weekView').className = 'btn ' + (activeButton === 'weekView' ? 'btn-primary' : 'btn-secondary');
+                document.getElementById('dayView').className = 'btn ' + (activeButton === 'dayView' ? 'btn-primary' : 'btn-secondary');
+            }
+        });
+    </script>
+</div>
+</body>
+</html>

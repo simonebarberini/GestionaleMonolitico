@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:if="${prenotazioni.empty}">
+        <p>Nessuna prenotazione per questo giorno.</p>
+    </div>
+    
+    <div th:unless="${prenotazioni.empty}">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome Cliente</th>
+                    <th>Data Fine</th>
+                    <th>Numero Cani</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="prenotazione : ${prenotazioni}">
+                    <td th:text="${prenotazione.nomeCliente}"></td>
+                    <td th:text="${#temporals.format(prenotazione.dataFine, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${prenotazione.numeroCani}"></td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" th:href="@{/modifica/{id}(id=${prenotazione.id})}">Modifica</a>
+                        <a class="btn btn-danger btn-sm" 
+                           data-bs-toggle="modal" 
+                           data-bs-target="#confirmDeleteModal"
+                           th:attr="data-id=${prenotazione.id}">
+                            Elimina
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
