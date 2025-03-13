@@ -107,23 +107,36 @@ public class CalendarioService {
         // Per la vista giornaliera, mostriamo solo le prenotazioni del giorno specifico
         LocalDate data = start; // Nella vista giornaliera, start e end sono uguali
         
-        // Filtra le prenotazioni per il giorno specificato
+        // Filtra le prenotazioni per il giorno specificato - corretto per includere il giorno di inizio
         List<PrenotazioneDTO> prenotazioniGiorno = prenotazioni.stream()
-                .filter(p -> !p.getDataInizio().isAfter(data) && !p.getDataFine().isBefore(data))
+                .filter(p -> (p.getDataInizio().isEqual(data) || p.getDataInizio().isBefore(data)) 
+                          && (p.getDataFine().isEqual(data) || p.getDataFine().isAfter(data)))
                 .collect(Collectors.toList());
         
         // Crea eventi per ogni prenotazione
         for (PrenotazioneDTO prenotazione : prenotazioniGiorno) {
             Map<String, Object> event = new HashMap<>();
-            event.put("title", prenotazione.getNomeCliente() + " - " + 
-                              "Fine: " + prenotazione.getDataFine().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + 
-                              " - Cani: " + prenotazione.getNumeroCani());
+            
+            // Formato più leggibile con data inizio inclusa
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String dataInizioStr = prenotazione.getDataInizio().format(formatter);
+            String dataFineStr = prenotazione.getDataFine().format(formatter);
+            
+            event.put("title", prenotazione.getNomeCliente() + 
+                      " - Inizio: " + dataInizioStr + 
+                      " - Fine: " + dataFineStr + 
+                      " - Cani: " + prenotazione.getNumeroCani());
+            
             event.put("start", data.toString());
             event.put("allDay", true);
+            event.put("dataInizio", dataInizioStr);
+            event.put("dataFine", dataFineStr);
+            event.put("numeroCani", prenotazione.getNumeroCani());
             
             // Imposta colore per le prenotazioni giornaliere
             event.put("backgroundColor", "#28a745"); // verde
             event.put("borderColor", "#1e7e34");
+            event.put("textColor", "#ffffff");
             
             events.add(event);
         }
@@ -134,9 +147,20 @@ public class CalendarioService {
     public List<PrenotazioneDTO> getPrenotazioniGiornoDettaglio(LocalDate data) throws URISyntaxException {
         List<PrenotazioneDTO> tutte = prenotazioneControllerFe.getAllPrenotazioni();
         
+        // Debug log to see what's happening
+        System.out.println("Data richiesta: " + data);
+        for (PrenotazioneDTO p : tutte) {
+            System.out.println("Prenotazione: " + p.getNomeCliente() + 
+                               ", inizio: " + p.getDataInizio() + 
+                               ", fine: " + p.getDataFine() + 
+                               ", match: " + ((p.getDataInizio().isEqual(data) || p.getDataInizio().isBefore(data)) && 
+                                             (p.getDataFine().isEqual(data) || p.getDataFine().isAfter(data))));
+        }
+        
         // Filtra le prenotazioni per il giorno specificato
         return tutte.stream()
-                .filter(p -> !p.getDataInizio().isAfter(data) && !p.getDataFine().isBefore(data))
+                .filter(p -> (p.getDataInizio().isEqual(data) || p.getDataInizio().isBefore(data)) && 
+                             (p.getDataFine().isEqual(data) || p.getDataFine().isAfter(data)))
                 .collect(Collectors.toList());
     }
 }

@@ -72,8 +72,12 @@ public class CalendarioController {
             @RequestParam String data,
             Model model) throws URISyntaxException {
         
+        // Debug log
+        System.out.println("Data ricevuta: " + data);
+        
         // Converti la stringa in LocalDate
         LocalDate localDate = LocalDate.parse(data.substring(0, 10));
+        System.out.println("Data convertita: " + localDate);
         
         List<PrenotazioneDTO> prenotazioni = calendarioService.getPrenotazioniGiornoDettaglio(localDate);
         model.addAttribute("prenotazioni", prenotazioni);
